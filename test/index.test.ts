@@ -1,7 +1,7 @@
 import { handler } from '../src';
 
 describe('bugsnag2clickup', () => {
-  it('works', async () => {
+  it('works with firstException', async () => {
     const output = await handler({
       account: {
         id: '',
@@ -51,9 +51,6 @@ describe('bugsnag2clickup', () => {
         ],
       },
     });
-
-
-    console.log(JSON.stringify(output));
     expect(output).toBeTruthy();
   });
 });

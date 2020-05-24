@@ -1,15 +1,13 @@
-import axios from 'axios';
+import fetch from 'node-fetch';
 
+const CLICKUP_URL = `https://api.clickup.com`;
 const CLICKUP_TOKEN = `${process.env.CLICKUP_TOKEN}`;
 const CLICKUP_LIST_ID = `${process.env.CLICKUP_LIST_ID}`;
 
-const clickupClient = axios.create({
-  baseURL: 'https://api.clickup.com',
-  headers: {
-    Authorization: CLICKUP_TOKEN,
-    'Content-Type': 'application/json',
-  },
-});
+const headers = {
+  Authorization: CLICKUP_TOKEN,
+  'Content-Type': 'application/json',
+};
 
 type Event = {
   account: {
@@ -76,7 +74,10 @@ async function handleFirstException(event: Event) {
   };
 
   if (event.error.stackTrace) {
-    content.ops.push({ insert: `\nStacktrace\n`, attributes: { size: 'large' } });
+    content.ops.push({
+      insert: `\nStacktrace\n`,
+      attributes: { size: 'large' },
+    });
     content.ops.push({
       insert: `${event.error.stackTrace
         .map(
@@ -113,7 +114,7 @@ async function handleFirstException(event: Event) {
   });
 }
 
-type CustomFieldsResponse = {
+type CustomFieldsData = {
   fields: {
     id: string;
     name: string;
@@ -127,17 +128,22 @@ type Task = {
 };
 
 async function createTask(task: Task) {
-  const response = await clickupClient.post(
-    `/api/v2/list/${CLICKUP_LIST_ID}/task`,
-    task
+  const response = await fetch(
+    `${CLICKUP_URL}/api/v2/list/${CLICKUP_LIST_ID}/task`,
+    {
+      method: 'POST',
+      body: JSON.stringify(task),
+      headers,
+    }
   );
-  return response.data;
+  return response.json();
 }
 
 async function getCustomFields() {
-  const response = await clickupClient.get<CustomFieldsResponse>(
-    `/api/v2/list/${CLICKUP_LIST_ID}/field`
+  const response = await fetch(
+    `${CLICKUP_URL}/api/v2/list/${CLICKUP_LIST_ID}/field`,
+    { headers }
   );
-
-  return response.data.fields;
+  const data: CustomFieldsData = await response.json();
+  return data.fields;
 }
