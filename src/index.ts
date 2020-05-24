@@ -52,7 +52,7 @@ type Event = {
 };
 
 export const handler = async (event: Event) => {
-  if (event.trigger.type === 'firstException') {
+  if (event?.trigger?.type === 'firstException') {
     return await handleFirstException(event);
   }
 
