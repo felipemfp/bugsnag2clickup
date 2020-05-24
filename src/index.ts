@@ -9,7 +9,7 @@ const headers = {
   'Content-Type': 'application/json',
 };
 
-type Event = {
+type WebhhookPayload = {
   account: {
     id: string;
     name: string;
@@ -51,16 +51,22 @@ type Event = {
   };
 };
 
-export const handler = async (event: Event) => {
-  if (event?.trigger?.type === 'firstException') {
-    return await handleFirstException(event);
+type Request = {
+  body: string;
+};
+
+export const handler = async (request: Request) => {
+  const eventData = JSON.parse(request.body) as WebhhookPayload;
+
+  if (eventData?.trigger?.type === 'firstException') {
+    return await handleFirstException(eventData);
   }
 
-  console.log(`Event handler not found: ${JSON.stringify(event)}`)
+  console.log(`Event handler not found for following event: ${request.body}`);
   return { ok: true };
 };
 
-async function handleFirstException(event: Event) {
+async function handleFirstException(event: WebhhookPayload) {
   const name = `${event.error.exceptionClass}: ${event.error.context}`;
   const content: { ops: any[] } = {
     ops: [
