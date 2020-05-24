@@ -56,6 +56,7 @@ export const handler = async (event: Event) => {
     return await handleFirstException(event);
   }
 
+  console.log(`Event handler not found: ${JSON.stringify(event)}`)
   return { ok: true };
 };
 
