@@ -67,11 +67,11 @@ export const handler = async (request: Request) => {
 };
 
 async function handleFirstException(event: WebhhookPayload) {
-  const name = `${event.error.exceptionClass}: ${event.error.context}`;
+  const name = `${event.error.exceptionClass} in ${event.error.context}`;
   const content: { ops: any[] } = {
     ops: [
       {
-        insert: `${event.error.exceptionClass}: ${event.error.context}\n`,
+        insert: `${event.error.exceptionClass} in ${event.error.context}\n`,
         attributes: { size: 'large' },
       },
       { insert: `${event.error.message}\n` },
