@@ -51,20 +51,24 @@ type WebhhookPayload = {
   };
 };
 
-type Request = {
-  body: string;
+export const awsHandler = async (req: any) => {
+  return await entrypoint(JSON.parse(req.body) as WebhhookPayload);
 };
 
-export const handler = async (request: Request) => {
-  const eventData = JSON.parse(request.body) as WebhhookPayload;
+export const gcpHandler = (req: any, res: any) => {
+  return entrypoint(req.body).then(data => res.json(data));
+};
 
-  if (eventData?.trigger?.type === 'firstException') {
-    return await handleFirstException(eventData);
+async function entrypoint(event: WebhhookPayload) {
+  if (event?.trigger?.type === 'firstException') {
+    return handleFirstException(event);
   }
 
-  console.log(`Event handler not found for following event: ${request.body}`);
+  console.log(
+    `Event handler not found for following event: ${JSON.stringify(event)}`
+  );
   return { ok: true };
-};
+}
 
 async function handleFirstException(event: WebhhookPayload) {
   const name = `${event.error.exceptionClass} in ${event.error.context}`;

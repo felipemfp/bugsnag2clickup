@@ -1,4 +1,4 @@
-import { handler } from '../src';
+import { awsHandler, gcpHandler } from '../src';
 
 const firstException = {
   account: {
@@ -51,10 +51,27 @@ const firstException = {
 };
 
 describe('bugsnag2clickup', () => {
-  it('works with firstException', async () => {
-    const output = await handler({
+  it('works with firstException on aws', async () => {
+    const output = await awsHandler({
       body: JSON.stringify(firstException),
     });
     expect(output).toBeTruthy();
+  });
+  it('works with firstException on gcp', async () => {
+    return new Promise(resolve => {
+      const res = {
+        json(data: any) {
+          expect(data).toBeTruthy();
+          resolve();
+        },
+      };
+
+      gcpHandler(
+        {
+          body: firstException,
+        },
+        res
+      );
+    });
   });
 });

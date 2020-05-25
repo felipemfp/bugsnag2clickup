@@ -6,9 +6,9 @@ A Bugsnag-ClickUp integration.
 
 You'll need a [ClickUp API](https://clickup.com/api) Token (`CLICKUP_TOKEN`) and a specific list (`CLICKUP_LIST_ID`) where you want to create the tasks configured in your AWS Lambda environment variables.
 
-You can use the `npm build` or `yarn build` to generate the `bugsnag2clickup.zip` and then upload it to the AWS Lambda.
+You can use the `npm build` or `yarn build` to generate the `bugsnag2clickup.zip` and then upload it to the AWS Lambda (use `awsHandler`) or GCP Functions (use `gcpHandler`).
 
-As last step, you should configure your AWS Lambda function as [Data Forwarding Webhook integration](https://docs.bugsnag.com/product/integrations/data-forwarding/webhook/) in Bugsnag.
+As last step, you should configure your AWS Lambda/GCP function as [Data Forwarding Webhook integration](https://docs.bugsnag.com/product/integrations/data-forwarding/webhook/) in Bugsnag.
 
 ## Local Development
 
